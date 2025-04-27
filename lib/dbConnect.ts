@@ -1,20 +1,21 @@
-import mongoose, {connections} from 'mongoose';
+import mongoose from 'mongoose';
 
-if(!process.env.MONGO_URL){
+if (!process.env.MONGO_URL) {
     throw new Error('Please define the MONGO_URL environment variable inside .env.local');
 }
 
-const connectDB = async()=>{
-    if(connections.length > 0 && connections[0].readyState){
-        console.log('Already Connected to Database:', connections[0].name);
+const connectDB = async () => {
+    // Check if already connected using mongoose.connection
+    if (mongoose.connection.readyState) {
+        console.log('Already Connected to Database:', mongoose.connection.name);
         return;
     }
-    try{
+    try {
         await mongoose.connect(process.env.MONGO_URL!);
-        if(connections.length > 0 && connections[0].readyState){
-            console.log('Connection Successful to Database:', connections[0].name);
+        if (mongoose.connection.readyState) {
+            console.log('Connection Successful to Database:', mongoose.connection.name);
         }
-    }catch(error: any){
+    } catch (error: any) {
         console.log(error.message);
         throw new Error('Error in Connecting to Database.');
     }
